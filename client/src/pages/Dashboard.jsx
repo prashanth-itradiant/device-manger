@@ -24,8 +24,8 @@ const Dashboard = () => {
       <div className="bg-white p-6 shadow-lg rounded-2xl flex flex-col items-center gap-4 w-full md:w-2/3">
         {/* Icon + Title */}
         <div className="flex items-center">
-          <CircleUser size={32} className="text-indigo-600 mb-1" />
-          <h2 className="text-2xl font-semibold text-gray-800">User Chart</h2>
+          <CircleUser size={25} className="text-gray-600 mb-1" />
+          <h2 className="text-2xl font-semibold text-gray-700">User Chart</h2>
         </div>
 
         {/* Chart + Stats Section */}

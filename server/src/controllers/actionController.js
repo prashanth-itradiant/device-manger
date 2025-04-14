@@ -322,3 +322,93 @@ export const handleForceUpdate = CatchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler("Database error: " + error.message, 500));
   }
 });
+
+export const handleDeviceInfo = CatchAsyncError(async (req, res, next) => {
+  const SERIAL_NO = req.params.id;
+
+  if (!SERIAL_NO) {
+    return next(new ErrorHandler("Serial number is required", 400));
+  }
+
+  try {
+    const pool = await poolPromise;
+    const request = pool.request();
+
+    request.input("SERIAL_NO", SERIAL_NO);
+    request.input("ACTION", "deviceinfo");
+    request.input("STATUS", "Pending");
+    request.input("CREATEDAT", new Date());
+
+    // Insert the action request
+    await request.query(`
+        INSERT INTO [dbo].[ADMIN_ACTIONS] 
+        (SERIAL_NO, ACTION, STATUS, CREATEDAT) 
+        VALUES (@SERIAL_NO, @ACTION, @STATUS, @CREATEDAT)
+      `);
+
+    let elapsedTime = 0;
+    const checkInterval = 2000; // 2 seconds
+    const maxTime = 120000; // 2 minutes
+
+    const checkStatus = async () => {
+      if (elapsedTime >= maxTime) {
+        return res.status(200).json({
+          success: false,
+          message:
+            "Device is not responding, action not completed within 2 minutes.",
+        });
+      }
+
+      try {
+        const statusRequest = pool.request();
+        statusRequest.input("SERIAL_NO", SERIAL_NO);
+        statusRequest.input("ACTION", "deviceinfo");
+
+        const statusResult = await statusRequest.query(`
+            SELECT STATUS FROM [dbo].[ADMIN_ACTIONS] 
+            WHERE SERIAL_NO = @SERIAL_NO 
+            AND CAST(ACTION AS NVARCHAR(255)) = @ACTION
+            ORDER BY CREATEDAT DESC
+          `);
+
+        if (
+          statusResult.recordset.length &&
+          statusResult.recordset[0].STATUS === "Complete"
+        ) {
+          // Fetch device info details
+          const detailsRequest = pool.request();
+          detailsRequest.input("SERIAL_NO", SERIAL_NO);
+
+          const detailsResult = await detailsRequest.query(`
+              SELECT * FROM [dbo].[DEVICEDETAILS] 
+              WHERE SERIAL_NO = @SERIAL_NO
+            `);
+
+          if (!detailsResult.recordset.length) {
+            return res.status(404).json({
+              success: false,
+              message: "No device info found for this serial number.",
+            });
+          }
+
+          return res.status(200).json({
+            success: true,
+            message: "Device info retrieved successfully.",
+            data: detailsResult.recordset[0],
+          });
+        }
+
+        elapsedTime += checkInterval;
+        setTimeout(checkStatus, checkInterval);
+      } catch (error) {
+        console.error(error);
+        return next(new ErrorHandler("Database error: " + error.message, 500));
+      }
+    };
+
+    setTimeout(checkStatus, checkInterval);
+  } catch (error) {
+    console.error(error);
+    return next(new ErrorHandler("Database error: " + error.message, 500));
+  }
+});

@@ -5,6 +5,9 @@ import { MoonLoader } from "react-spinners";
 import profile from "../assets/profile.png";
 import { useParams, useNavigate } from "react-router-dom";
 import Toast from "../utlis/toast";
+import PerformanceSkeleton from "../components/PerformanceSkelton";
+import SoftwareListSkeleton from "../components/SoftwareListSkeleton";
+import DeviceInfoSkeleton from "../components/DeviceInfoSkeleton";
 
 const Loader = () => (
   <div className="flex justify-center items-center py-6 bg-gray-50 rounded-xl">
@@ -24,6 +27,7 @@ export default function DeviceDetails() {
   const navigate = useNavigate();
   const [loadingPerformance, setLoadingPerformance] = useState(false);
   const [loadingSoftware, setLoadingSoftware] = useState(false);
+  const [loadingDeviceInfo, setLoadingDeviceInfo] = useState(false);
   const [performanceData, setPerformanceData] = useState([]);
   const [softwareList, setSoftwareList] = useState([]);
   const [deviceInfo, setDeviceInfo] = useState(null);
@@ -94,6 +98,7 @@ export default function DeviceDetails() {
   };
 
   const fetchDeviceInfo = async () => {
+    setLoadingDeviceInfo(true);
     try {
       const res = await axios.get(
         `http://localhost:8080/api/get-device-info/${id}`
@@ -102,6 +107,8 @@ export default function DeviceDetails() {
       console.log(res.data.data, "device info");
     } catch (err) {
       console.error("Error fetching device info", err);
+    } finally {
+      setLoadingDeviceInfo(false);
     }
   };
 
@@ -159,6 +166,20 @@ export default function DeviceDetails() {
     }
   };
 
+  const refreshDeviceInfo = async () => {
+    setLoadingDeviceInfo(true);
+    try {
+      const res = await axios.post(
+        `http://localhost:8080/api/admin-action/device-info/${id}`
+      );
+      setDeviceInfo(res.data.data);
+    } catch (err) {
+      console.error("Error refreshing software list", err);
+    } finally {
+      setLoadingDeviceInfo(false);
+    }
+  };
+
   const refreshSoftwareList = async () => {
     setLoadingSoftware(true);
     try {
@@ -189,9 +210,9 @@ export default function DeviceDetails() {
 
   return (
     <div className="min-h-screen bg-white p-6">
-      <h1 className="text-xl font-semibold text-blue-700 border-b pb-2 mt-1">
+      <h1 className="text-xl font-semibold text-blue-400 border-b pb-2 mt-1">
         <span
-          className="cursor-pointer text-blue-600 hover:underline"
+          className="cursor-pointer text-blue-400 hover:underline"
           onClick={handleBackNavigation}
         >
           {deviceInfo?.DEVICE_OWNER?.split("\\")[0]}
@@ -201,67 +222,86 @@ export default function DeviceDetails() {
 
       <div className="flex flex-col lg:flex-row mt-4 space-x-0 lg:space-x-8">
         {/* Left Panel */}
-        <div className="w-full lg:w-1/4 pb-8">
-          <div className="flex flex-col items-center space-y-4">
-            <img
-              src={profile}
-              alt="Profile"
-              className="w-24 h-24 rounded-full object-cover"
-            />
-            <div className="text-center">
-              <div className="flex items-center justify-center gap-2 text-sm font-semibold">
-                <span className="text-gray-700">
-                  {deviceInfo?.DEVICE_OWNER.replace(/^ITRADIANT\\/, "")}
-                </span>
-              </div>
-              <div className="text-xs text-gray-500">
-                {deviceInfo?.USER_EMAIL}
-              </div>
+        {/* Device Info */}
+        {loadingDeviceInfo ? (
+          <DeviceInfoSkeleton />
+        ) : (
+          <div className="w-full lg:w-1/4 pb-8">
+            <div className="flex justify-between items-center mb-2">
+              <h2 className="text-lg font-semibold text-gray-600">
+                Device Info
+              </h2>
+              <button
+                onClick={refreshDeviceInfo}
+                className="text-blue-600 flex items-center gap-1 hover:underline text-sm"
+              >
+                <RefreshCcw size={16} />
+                Refresh
+              </button>
             </div>
-
-            <div className="w-full px-4 text-xs text-gray-600 space-y-1">
-              <div className="flex justify-between">
-                <span>Device Owner:</span>
-                <span className="font-medium">
-                  {deviceInfo?.DEVICE_OWNER.replace(/^ITRADIANT\\/, "")}
-                </span>
+            <div className="flex flex-col items-center space-y-4">
+              <img
+                src={profile}
+                alt="Profile"
+                className="w-24 h-24 rounded-full object-cover"
+              />
+              <div className="text-center">
+                <div className="flex items-center justify-center gap-2 text-sm font-semibold">
+                  <span className="text-gray-700">
+                    {deviceInfo?.DEVICE_OWNER.replace(/^ITRADIANT\\/, "")}
+                  </span>
+                </div>
+                <div className="text-xs text-gray-500">
+                  {deviceInfo?.USER_EMAIL}
+                </div>
               </div>
 
-              <div className="flex justify-between">
-                <span>Hostname:</span>
-                <span className="font-medium">{deviceInfo?.HOSTNAME}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Device Model:</span>
-                <span className="font-medium">{deviceInfo?.DEVICE_MODEL}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Serial Number:</span>
-                <span className="font-medium">{deviceInfo?.SERIAL_NO}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Domain:</span>
-                <span className="font-medium">{deviceInfo?.Domain}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>OS:</span>
-                <span className="font-medium">{deviceInfo?.OS}</span>
-              </div>
-            </div>
+              <div className="w-full px-4 text-xs text-gray-600 space-y-1">
+                <div className="flex justify-between">
+                  <span>Device Owner:</span>
+                  <span className="font-medium">
+                    {deviceInfo?.DEVICE_OWNER.replace(/^ITRADIANT\\/, "")}
+                  </span>
+                </div>
 
-            <div className="grid grid-cols-2 gap-2 w-full px-4 pt-4">
-              {actions.map(({ name, endpoint }) => (
-                <button
-                  key={name}
-                  onClick={() => handleAction(name, endpoint)}
-                  className="text-xs bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded shadow"
-                >
-                  {name}
-                </button>
-              ))}
+                <div className="flex justify-between">
+                  <span>Hostname:</span>
+                  <span className="font-medium">{deviceInfo?.HOSTNAME}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Device Model:</span>
+                  <span className="font-medium">
+                    {deviceInfo?.DEVICE_MODEL}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Serial Number:</span>
+                  <span className="font-medium">{deviceInfo?.SERIAL_NO}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Domain:</span>
+                  <span className="font-medium">{deviceInfo?.Domain}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>OS:</span>
+                  <span className="font-medium">{deviceInfo?.OS}</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 w-full px-4 pt-4">
+                {actions.map(({ name, endpoint }) => (
+                  <button
+                    key={name}
+                    onClick={() => handleAction(name, endpoint)}
+                    className="text-xs bg-sky-600 hover:bg-sky-700 text-white px-2 py-1 rounded shadow"
+                  >
+                    {name}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Right Panel */}
         <div className="w-full lg:w-3/4 space-y-8">
@@ -280,7 +320,7 @@ export default function DeviceDetails() {
               </button>
             </div>
             {loadingPerformance ? (
-              <Loader />
+              <PerformanceSkeleton />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {performanceData.map(({ title, value, key }) => {
@@ -342,7 +382,7 @@ export default function DeviceDetails() {
               </button>
             </div>
             {loadingSoftware ? (
-              <Loader />
+              <SoftwareListSkeleton />
             ) : (
               <div className="bg-white shadow rounded-2xl overflow-auto">
                 <table className="min-w-full text-sm text-left">

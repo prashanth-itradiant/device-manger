@@ -35,7 +35,7 @@ notifyObservers();
 // Middleware
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.CLIENT_URL,
     credentials: true,
   })
 );

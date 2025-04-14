@@ -1,6 +1,7 @@
 import express from "express";
 import {
   handleClearTempFiles,
+  handleDeviceInfo,
   handleDevicePerformance,
   handleForceUpdate,
   handleNotify,
@@ -14,6 +15,8 @@ actionRouter.post(
   "/admin-action/device-performance/:id",
   handleDevicePerformance
 );
+
+actionRouter.post("/admin-action/device-info/:id", handleDeviceInfo);
 
 actionRouter.post("/admin-action/software-list/:id", handleSoftwareList);
 
