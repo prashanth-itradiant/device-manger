@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Cpu, HardDrive, MemoryStick, RefreshCcw, Monitor } from "lucide-react";
 import { MoonLoader } from "react-spinners";
-import profile from "../assets/profile.png";
+import profile from "../assets/profile1.jpg";
 import { useParams, useNavigate } from "react-router-dom";
 import Toast from "../utlis/toast";
 import PerformanceSkeleton from "../components/PerformanceSkelton";
@@ -209,10 +209,10 @@ export default function DeviceDetails() {
   };
 
   return (
-    <div className="min-h-screen bg-white p-6">
-      <h1 className="text-xl font-semibold text-blue-400 border-b pb-2 mt-1">
+    <div className="min-h-screen bg-white p-3">
+      <h1 className="text-lg font-semibold text-gray-600 border-b pb-2 mt-1">
         <span
-          className="cursor-pointer text-blue-400 hover:underline"
+          className="cursor-pointer text-gray-600 hover:underline"
           onClick={handleBackNavigation}
         >
           {deviceInfo?.DEVICE_OWNER?.split("\\")[0]}
@@ -228,14 +228,14 @@ export default function DeviceDetails() {
         ) : (
           <div className="w-full lg:w-1/4 pb-8">
             <div className="flex justify-between items-center mb-2">
-              <h2 className="text-lg font-semibold text-gray-600">
+              <h2 className="text-base font-medium text-gray-600">
                 Device Info
               </h2>
               <button
                 onClick={refreshDeviceInfo}
-                className="text-blue-600 flex items-center gap-1 hover:underline text-sm"
+                className="text-blue-600  flex items-center gap-1 hover:underline text-xs"
               >
-                <RefreshCcw size={16} />
+                <RefreshCcw size={12} />
                 Refresh
               </button>
             </div>
@@ -286,6 +286,10 @@ export default function DeviceDetails() {
                   <span>OS:</span>
                   <span className="font-medium">{deviceInfo?.OS}</span>
                 </div>
+                <div className="flex justify-between">
+                  <span>Users:</span>
+                  <span className="font-medium">{deviceInfo?.DeviceUsers}</span>
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-2 w-full px-4 pt-4">
@@ -293,7 +297,7 @@ export default function DeviceDetails() {
                   <button
                     key={name}
                     onClick={() => handleAction(name, endpoint)}
-                    className="text-xs bg-sky-600 hover:bg-sky-700 text-white px-2 py-1 rounded shadow"
+                    className="text-xs bg-gray-900 hover:bg-gray-700 text-white px-2 py-1 rounded shadow"
                   >
                     {name}
                   </button>
@@ -308,14 +312,14 @@ export default function DeviceDetails() {
           {/* Performance Section */}
           <div>
             <div className="flex justify-between items-center mb-2">
-              <h2 className="text-lg font-semibold text-gray-600">
+              <h2 className="text-base font-medium text-gray-600">
                 Device Performance
               </h2>
               <button
                 onClick={refreshPerformanceData}
-                className="text-blue-600 flex items-center gap-1 hover:underline text-sm"
+                className="text-blue-600 flex items-center gap-1 hover:underline text-xs"
               >
-                <RefreshCcw size={16} />
+                <RefreshCcw size={12} />
                 Refresh
               </button>
             </div>
@@ -352,7 +356,7 @@ export default function DeviceDetails() {
                       className="bg-white shadow rounded-2xl p-4 flex items-center space-x-4"
                     >
                       <div className="bg-gray-100 p-3 rounded-full">
-                        <Icon className="w-6 h-6 text-blue-500" />
+                        <Icon className="w-6 h-6 text-gray-900" />
                       </div>
                       <div>
                         <h4 className="text-gray-600 text-sm">{title}</h4>
@@ -370,14 +374,14 @@ export default function DeviceDetails() {
           {/* Software List Section */}
           <div>
             <div className="flex justify-between items-center mb-2">
-              <h2 className="text-lg font-semibold text-gray-600">
+              <h2 className="text-base font-medium text-gray-600">
                 Software List
               </h2>
               <button
                 onClick={refreshSoftwareList}
-                className="text-blue-600 flex items-center gap-1 hover:underline text-sm"
+                className="text-blue-600 flex items-center gap-1 hover:underline text-xs"
               >
-                <RefreshCcw size={16} />
+                <RefreshCcw size={12} />
                 Refresh
               </button>
             </div>

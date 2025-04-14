@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { Link, useNavigate, Outlet } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../redux/authSlice";
-import { FiMenu, FiLogOut, FiGrid, FiMonitor, FiUser } from "react-icons/fi";
+import { FiMenu, FiLogOut, FiGrid, FiMonitor } from "react-icons/fi";
+import { RiAccountCircleLine } from "react-icons/ri";
 
 const Layout = () => {
   const navigate = useNavigate();
@@ -24,11 +25,11 @@ const Layout = () => {
   return (
     <div className="h-screen flex flex-col">
       {/* Navbar (Top bar with nav links) */}
-      <header className="bg-blue-500 text-white px-4 py-2 flex items-center justify-between">
+      <header className="bg-gray-800 text-white px-4 py-2 flex items-center justify-between h-10">
         <div className="flex items-center gap-4">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="text-xl p-2 rounded hover:bg-white hover:text-blue-600 transition"
+            className="text-lg p-1 rounded hover:bg-white hover:text-gray-600 transition"
           >
             <FiMenu />
           </button>
@@ -38,7 +39,7 @@ const Layout = () => {
             <Link
               key={index}
               to={item.path}
-              className="text-sm px-2 py-1 rounded hover:bg-white hover:text-blue-700 transition"
+              className="text-sm px-2 py-1 rounded hover:bg-white hover:text-gray-700 transition"
             >
               {item.text}
             </Link>
@@ -47,7 +48,7 @@ const Layout = () => {
 
         <div className="flex items-center">
           <span className="mr-2 text-sm">{user ? user.name : "Guest"}</span>
-          <FiUser size={18} />
+          <RiAccountCircleLine size={24} />
         </div>
       </header>
 
@@ -61,7 +62,7 @@ const Layout = () => {
                 <Link
                   key={index}
                   to={item.path}
-                  className="flex items-center p-2 hover:bg-blue-600 hover:text-white rounded-md transition text-sm"
+                  className="flex items-center p-2 hover:bg-gray-600 hover:text-white rounded-md transition text-sm"
                 >
                   {item.icon}
                   <span className="ml-2">{item.text}</span>
