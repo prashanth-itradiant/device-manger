@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // ✅ Fetch user on app load (Ensures persistence via cookies)
@@ -6,9 +6,12 @@ export const fetchUser = createAsyncThunk(
   "auth/fetchUser",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get("http://localhost:8080/api/auth/me", {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/me`,
+        {
+          withCredentials: true,
+        }
+      );
       return response.data.data;
     } catch (error) {
       return rejectWithValue("User not authenticated");
@@ -22,7 +25,7 @@ export const loginUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/login",
+        `${import.meta.env.VITE_API_BASE_URL}/api/login`,
         userData,
         { withCredentials: true }
       );
@@ -39,7 +42,7 @@ export const logoutUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       await axios.post(
-        "http://localhost:8080/api/logout",
+        `${import.meta.env.VITE_API_BASE_URL}/api/logout`,
         {},
         { withCredentials: true }
       );

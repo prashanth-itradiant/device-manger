@@ -44,7 +44,7 @@ export default function DeviceDetails() {
     setLoadingPerformance(true);
     try {
       const res = await axios.get(
-        `http://localhost:8080/api/get-device-performance/${id}`
+        `${import.meta.env.VITE_API_BASE_URL}/api/get-device-performance/${id}`
       );
       const raw = res.data.data;
       const transformed = [
@@ -72,7 +72,9 @@ export default function DeviceDetails() {
     console.log();
     try {
       const payload = { SERIAL_NO: id, Message: message };
-      const url = `http://localhost:8080${selectedAction.endpoint}`;
+      const url = `${import.meta.env.VITE_API_BASE_URL}${
+        selectedAction.endpoint
+      }`;
       const response = await axios.post(url, payload);
       Toast.fire({ icon: "success", title: response.data.message });
     } catch (error) {
@@ -86,7 +88,7 @@ export default function DeviceDetails() {
     setLoadingSoftware(true);
     try {
       const res = await axios.get(
-        `http://localhost:8080/api/get-device-softwares/${id}`
+        `${import.meta.env.VITE_API_BASE_URL}/api/get-device-softwares/${id}`
       );
       setSoftwareList(res.data.data);
       console.log(res.data, "software list");
@@ -101,7 +103,7 @@ export default function DeviceDetails() {
     setLoadingDeviceInfo(true);
     try {
       const res = await axios.get(
-        `http://localhost:8080/api/get-device-info/${id}`
+        `${import.meta.env.VITE_API_BASE_URL}/api/get-device-info/${id}`
       );
       setDeviceInfo(res.data.data);
       console.log(res.data.data, "device info");
@@ -122,7 +124,7 @@ export default function DeviceDetails() {
     setLoadingAction(name);
     try {
       const payload = { SERIAL_NO: id };
-      const url = `http://localhost:8080${endpoint}`;
+      const url = `${import.meta.env.VITE_API_BASE_URL}${endpoint}`;
       const response = await axios.post(url, payload);
 
       // ✅ Show success notification
@@ -148,7 +150,9 @@ export default function DeviceDetails() {
     setLoadingPerformance(true);
     try {
       const res = await axios.post(
-        `http://localhost:8080/api/admin-action/device-performance/${id}`
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/admin-action/device-performance/${id}`
       );
       const raw = res.data.data;
       const transformed = [
@@ -170,7 +174,9 @@ export default function DeviceDetails() {
     setLoadingDeviceInfo(true);
     try {
       const res = await axios.post(
-        `http://localhost:8080/api/admin-action/device-info/${id}`
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/admin-action/device-info/${id}`
       );
       setDeviceInfo(res.data.data);
     } catch (err) {
@@ -184,7 +190,9 @@ export default function DeviceDetails() {
     setLoadingSoftware(true);
     try {
       const res = await axios.post(
-        `http://localhost:8080/api/admin-action/software-list/${id}`
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/admin-action/software-list/${id}`
       );
       setSoftwareList(res.data.data);
     } catch (err) {

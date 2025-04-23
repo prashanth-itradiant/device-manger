@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import React, { useCallback, useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi"; // Search Icon
+import { useNavigate } from "react-router-dom";
 
 function DeviceList() {
   const [users, setUsers] = useState([]);
@@ -12,7 +12,9 @@ function DeviceList() {
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get("http://localhost:8080/api/devices");
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/devices`
+      );
       if (data.success) {
         setUsers(data.data);
       }
