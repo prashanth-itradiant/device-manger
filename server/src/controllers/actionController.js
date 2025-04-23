@@ -54,7 +54,7 @@ export const handleDevicePerformance = CatchAsyncError(
 
           if (
             statusResult.recordset.length &&
-            statusResult.recordset[0].STATUS === "Complete"
+            statusResult.recordset[0].STATUS === "Completed"
           ) {
             // Fetch device performance details
             const detailsRequest = pool.request();
@@ -148,7 +148,7 @@ export const handleSoftwareList = CatchAsyncError(async (req, res, next) => {
 
         if (
           statusResult.recordset.length &&
-          statusResult.recordset[0].STATUS === "Complete"
+          statusResult.recordset[0].STATUS === "Completed"
         ) {
           // Fetch the list of software from Softwares table
           const softwareRequest = pool.request();

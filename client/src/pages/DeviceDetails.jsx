@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Cpu, HardDrive, MemoryStick, RefreshCcw, Monitor } from "lucide-react";
+import { Cpu, HardDrive, MemoryStick, Monitor, RefreshCcw } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { MoonLoader } from "react-spinners";
 import profile from "../assets/profile1.jpg";
-import { useParams, useNavigate } from "react-router-dom";
-import Toast from "../utlis/toast";
+import DeviceInfoSkeleton from "../components/DeviceInfoSkeleton";
 import PerformanceSkeleton from "../components/PerformanceSkelton";
 import SoftwareListSkeleton from "../components/SoftwareListSkeleton";
-import DeviceInfoSkeleton from "../components/DeviceInfoSkeleton";
+import Toast from "../utlis/toast";
 
 const Loader = () => (
   <div className="flex justify-center items-center py-6 bg-gray-50 rounded-xl">
@@ -247,8 +247,10 @@ export default function DeviceDetails() {
               />
               <div className="text-center">
                 <div className="flex items-center justify-center gap-2 text-sm font-semibold">
-                  <span className="text-gray-700">
-                    {deviceInfo?.DEVICE_OWNER.replace(/^ITRADIANT\\/, "")}
+                  <span>
+                    {deviceInfo?.DEVICE_OWNER
+                      ? deviceInfo.DEVICE_OWNER.replace(/^ITRADIANT\\/, "")
+                      : "Unknown User"}
                   </span>
                 </div>
                 <div className="text-xs text-gray-500">
@@ -260,7 +262,9 @@ export default function DeviceDetails() {
                 <div className="flex justify-between">
                   <span>Device Owner:</span>
                   <span className="font-medium">
-                    {deviceInfo?.DEVICE_OWNER.replace(/^ITRADIANT\\/, "")}
+                    {deviceInfo?.DEVICE_OWNER
+                      ? deviceInfo.DEVICE_OWNER.replace(/^ITRADIANT\\/, "")
+                      : ""}
                   </span>
                 </div>
 

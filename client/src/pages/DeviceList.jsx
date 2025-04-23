@@ -110,7 +110,9 @@ function DeviceList() {
                       <input type="checkbox" />
                     </td>
                     <td className="p-2 text-nowrap text-xs">
-                      {user.DEVICE_OWNER.replace(/^ITRADIANT\\/, "")}
+                      {user.DEVICE_OWNER
+                        ? user.DEVICE_OWNER.replace(/^ITRADIANT\\/, "")
+                        : ""}
                     </td>
                     <td className="p-2 text-nowrap text-xs">
                       {user.USER_EMAIL}
