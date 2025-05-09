@@ -1,5 +1,5 @@
-import sql from "mssql";
 import dotenv from "dotenv";
+import sql from "mssql";
 
 dotenv.config();
 
@@ -8,7 +8,7 @@ const config = {
   password: process.env.DB_PASSWORD,
   server: process.env.DB_HOST,
   database: process.env.DB_NAME,
-  port: 81,
+  port: process.env.DB_PORT,
   pool: {
     max: 10, // Maximum number of connections
     min: 2, // Minimum number of connections
@@ -31,4 +31,4 @@ const poolPromise = new sql.ConnectionPool(config)
     process.exit(1);
   });
 
-export { sql, poolPromise };
+export { poolPromise, sql };
